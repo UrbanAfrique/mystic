@@ -8,33 +8,45 @@ const DestinationsGrid = () => {
   const destinations = [
     {
       image: desertImage,
-      title: 'Merzouga',
-      subtitle: 'Désert du Sahara',
-      description: 'Nuits étoilées et dunes infinies'
+      title: 'Marrakech',
+      subtitle: 'La Ville Rouge',
+      description: 'Palais somptueux, jardins secrets et souks animés au cœur de la ville impériale',
+      highlights: ['Palais de la Bahia', 'Jardins Majorelle', 'Place Jemaa el-Fna', 'Souks traditionnels']
     },
     {
-      image: atlasImage,
-      title: 'Vallée de l\'Ourika',
-      subtitle: 'Montagnes de l\'Atlas',
-      description: 'Villages berbères authentiques'
+      image: desertImage,
+      title: 'Désert du Sahara',
+      subtitle: 'Merzouga & Erg Chebbi',
+      description: 'Dunes dorées, nuits étoilées et traditions nomades dans l\'immensité du désert',
+      highlights: ['Méharée au coucher du soleil', 'Bivouac de luxe', 'Musique gnawa', 'Lever de soleil sur les dunes']
     },
     {
       image: essaouiraImage,
-      title: 'Plages d\'Essaouira',
-      subtitle: 'Côte Atlantique',
-      description: 'Charme portuaire et vents océaniques'
+      title: 'Essaouira',
+      subtitle: 'La Cité des Vents',
+      description: 'Port fortifié, plages sauvages et artisanat authentique face à l\'Atlantique',
+      highlights: ['Médina UNESCO', 'Port de pêche', 'Ateliers d\'artisans', 'Sports nautiques']
     },
     {
       image: chefchaouenImage,
       title: 'Chefchaouen',
       subtitle: 'Perle du Rif',
-      description: 'Architecture bleue envoûtante'
+      description: 'Ruelles azur, terrasses fleuries et panoramas montagneux dans cette perle berbère',
+      highlights: ['Architecture bleue unique', 'Artisanat local', 'Randonnées en montagne', 'Cascades d\'Akchour']
+    },
+    {
+      image: atlasImage,
+      title: 'Montagnes de l\'Atlas',
+      subtitle: 'Toubkal & Vallées',
+      description: 'Sommets enneigés, villages berbères et vallées verdoyantes pour les amoureux de nature',
+      highlights: ['Mont Toubkal 4167m', 'Villages berbères', 'Cascades d\'Ouzoud', 'Vallée de l\'Ourika']
     },
     {
       image: marrakechImage,
-      title: 'Marrakech',
-      subtitle: 'Ville Impériale',
-      description: 'Palais et jardins secrets'
+      title: 'Fès',
+      subtitle: 'Capitale Spirituelle',
+      description: 'Médina millénaire, université Al Quaraouiyine et artisanat d\'art dans la plus ancienne ville impériale',
+      highlights: ['Médina UNESCO', 'Université Al Quaraouiyine', 'Tanneries Chouara', 'Palais royal']
     }
   ];
 
@@ -77,6 +89,14 @@ const DestinationsGrid = () => {
                   <p className="text-sm opacity-90">
                     {destination.description}
                   </p>
+                  <div className="space-y-1">
+                    {destination.highlights.slice(0, 2).map((highlight, idx) => (
+                      <div key={idx} className="flex items-center text-xs opacity-80">
+                        <div className="w-1 h-1 bg-white rounded-full mr-2"></div>
+                        {highlight}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

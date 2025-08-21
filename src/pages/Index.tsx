@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import AboutSection from '@/components/AboutSection';
+import ServicesSection from '@/components/ServicesSection';
 import IntroSection from '@/components/IntroSection';
 import GalleryCarousel from '@/components/GalleryCarousel';
 import ImageTextSection from '@/components/ImageTextSection';
-import ExperienceSection from '@/components/ExperienceSection';
+import ActivitiesSection from '@/components/ActivitiesSection';
 import DestinationsGrid from '@/components/DestinationsGrid';
-import ProductsSection from '@/components/ProductsSection';
+import AccommodationsSection from '@/components/AccommodationsSection';
+import GastronomySection from '@/components/GastronomySection';
+import TransportSection from '@/components/TransportSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
@@ -42,12 +46,16 @@ const Index = () => {
     <div className="min-h-screen">
       <Navbar />
       <Hero />
+      <AboutSection />
+      <ServicesSection />
       <IntroSection />
       <GalleryCarousel />
       <ImageTextSection />
-      <ExperienceSection />
+      <ActivitiesSection />
       <DestinationsGrid />
-      <ProductsSection />
+      <AccommodationsSection />
+      <GastronomySection />
+      <TransportSection />
       <ContactSection />
       <Footer />
     </div>

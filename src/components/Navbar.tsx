@@ -18,10 +18,13 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Accueil', href: '#home' },
-    { name: 'Produits', href: '/products' },
+    { name: 'Qui sommes-nous', href: '#about' },
+    { name: 'Nos Services', href: '#services' },
     { name: 'Destinations', href: '#destinations' },
-    { name: 'Expériences', href: '#experiences' },
-    { name: 'À propos', href: '#about' },
+    { name: 'Hébergements', href: '#accommodations' },
+    { name: 'Activités', href: '#activities' },
+    { name: 'Gastronomie', href: '#gastronomy' },
+    { name: 'Transport', href: '#transport' },
     { name: 'Contact', href: '#contact' },
   ];
 
