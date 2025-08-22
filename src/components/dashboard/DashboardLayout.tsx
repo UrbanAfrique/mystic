@@ -20,11 +20,12 @@ import {
   Phone,
   MapPin,
   Crown, 
-  Palette as PaletteIcon,
   Moon,
   Sun,
   Bell,
-  Search
+  Search,
+  Monitor,
+  Smartphone
 } from 'lucide-react';
 import { getCurrentUser, isAuthenticated, logout as doLogout } from "@/services/auth";
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -105,16 +106,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       .slice(0, 2);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
   const getRoleBadge = (role: string) => {
     const roleMap: { [key: string]: { text: string; color: string; icon: React.ReactNode } } = {
       'ROLE_SELLER': { 
@@ -145,61 +136,58 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     switch (theme) {
       case 'dark':
         return {
-          sidebar: 'bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900',
-          topbar: 'bg-gray-800/90',
-          background: 'bg-gray-900',
-          card: 'bg-gray-800 border-gray-700',
-          text: 'text-gray-100'
+          sidebar: 'bg-gray-900 border-gray-800',
+          topbar: 'bg-gray-900/95 border-gray-800',
+          background: 'bg-gray-950',
+          card: 'bg-gray-900 border-gray-800',
+          text: 'text-gray-100',
+          accent: 'from-blue-600 to-purple-600'
         };
       case 'moroccan':
         return {
           sidebar: 'bg-gradient-to-b from-orange-900 via-red-900 to-yellow-900',
-          topbar: 'bg-orange-800/90',
+          topbar: 'bg-orange-800/95 border-orange-700',
           background: 'bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50',
-          card: 'bg-white/80 border-orange-200/50',
-          text: 'text-gray-800'
+          card: 'bg-white/90 border-orange-200',
+          text: 'text-gray-800',
+          accent: 'from-orange-500 to-red-500'
         };
       case 'modern':
         return {
-          sidebar: 'bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900',
-          topbar: 'bg-slate-800/90',
-          background: 'bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50',
-          card: 'bg-white border-slate-200',
-          text: 'text-slate-800'
+          sidebar: 'bg-white border-gray-200',
+          topbar: 'bg-white/95 border-gray-200',
+          background: 'bg-gray-50',
+          card: 'bg-white border-gray-200',
+          text: 'text-gray-900',
+          accent: 'from-indigo-500 to-purple-500'
         };
       default:
         return {
-          sidebar: 'bg-gradient-to-b from-orange-900 via-red-900 to-yellow-900',
-          topbar: 'bg-white/80',
-          background: 'bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50',
-          card: 'bg-white border-orange-200/50',
-          text: 'text-gray-800'
+          sidebar: 'bg-white border-gray-200',
+          topbar: 'bg-white/95 border-gray-200',
+          background: 'bg-gray-50',
+          card: 'bg-white border-gray-200',
+          text: 'text-gray-900',
+          accent: 'from-blue-500 to-indigo-500'
         };
     }
   };
 
   const themeStyles = getThemeStyles();
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></div>
-          <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-red-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
+          <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+          <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-purple-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen ${themeStyles.background} transition-all duration-500`}>
-      {/* Moroccan Pattern Overlay */}
-      <div className="fixed inset-0 opacity-5 pointer-events-none">
-        <div className="w-full h-full" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d97706' fill-opacity='0.4'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          backgroundSize: '60px 60px'
-        }}></div>
-      </div>
-
+    <div className={`min-h-screen ${themeStyles.background} transition-all duration-300`}>
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -209,34 +197,28 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-72 ${themeStyles.sidebar} shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 ${themeStyles.sidebar} border-r ${themeStyles.sidebar.includes('border-') ? '' : 'border-gray-200'} shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        {/* Moroccan Geometric Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="w-full h-full" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.3'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10-10v20h20V10H30zm-20 0a10 10 0 1 0 20 0 10 10 0 0 0-20 0z'/%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '40px 40px'
-          }}></div>
-        </div>
-
-        <div className="flex flex-col h-full relative z-10">
+        <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center justify-between p-6 border-b border-white/20 backdrop-blur-sm">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200/20">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-white/20">
+              <div className={`w-12 h-12 bg-gradient-to-br ${themeStyles.accent} rounded-xl flex items-center justify-center shadow-lg`}>
                 <span className="text-white font-bold text-lg">M</span>
               </div>
               <div>
-                <h1 className="font-serif text-xl font-bold text-white tracking-wide">
+                <h1 className={`font-serif text-xl font-bold ${themeStyles.text} tracking-wide`}>
                   MystigTravel
                 </h1>
-                <p className="text-orange-200 text-xs font-medium">Admin Panel</p>
+                <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} text-xs font-medium`}>
+                  Admin Panel
+                </p>
               </div>
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors duration-200 text-white"
+              className={`lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 ${themeStyles.text}`}
             >
               <X className="w-5 h-5" />
             </button>
@@ -244,10 +226,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
           {/* User Profile Section */}
           {user && (
-            <div className="p-6 border-b border-white/20 backdrop-blur-sm">
+            <div className="p-6 border-b border-gray-200/20">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="relative">
-                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-xl ring-4 ring-white/20">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${themeStyles.accent} rounded-2xl flex items-center justify-center shadow-lg`}>
                     {user.avatar ? (
                       <img 
                         src={user.avatar} 
@@ -267,7 +249,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white font-bold text-lg truncate">{user.name}</p>
+                  <p className={`${themeStyles.text} font-bold text-lg truncate`}>{user.name}</p>
                   <div className="flex items-center space-x-1 mt-1">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getRoleBadge(user.role).color}`}>
                       {getRoleBadge(user.role).icon}
@@ -277,21 +259,21 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </div>
               </div>
               
-              <div className="space-y-3 text-sm">
+              <div className="space-y-2 text-sm">
                 {user.businessInfo.companyName && (
-                  <div className="flex items-center text-orange-200 bg-white/10 rounded-lg px-3 py-2">
+                  <div className={`flex items-center ${theme === 'dark' ? 'text-gray-300 bg-gray-800' : 'text-gray-600 bg-gray-100'} rounded-lg px-3 py-2`}>
                     <Building className="w-4 h-4 mr-2" />
                     <span className="truncate">{user.businessInfo.companyName}</span>
                   </div>
                 )}
                 
-                <div className="flex items-center text-orange-200 bg-white/10 rounded-lg px-3 py-2">
+                <div className={`flex items-center ${theme === 'dark' ? 'text-gray-300 bg-gray-800' : 'text-gray-600 bg-gray-100'} rounded-lg px-3 py-2`}>
                   <Mail className="w-4 h-4 mr-2" />
                   <span className="truncate">{user.email}</span>
                 </div>
                 
                 {user.phone && (
-                  <div className="flex items-center text-orange-200 bg-white/10 rounded-lg px-3 py-2">
+                  <div className={`flex items-center ${theme === 'dark' ? 'text-gray-300 bg-gray-800' : 'text-gray-600 bg-gray-100'} rounded-lg px-3 py-2`}>
                     <Phone className="w-4 h-4 mr-2" />
                     <span>{user.phone}</span>
                   </div>
@@ -301,7 +283,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           )}
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-3 overflow-y-auto">
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
             {menuItems.map((item) => {
               const active = isActiveItem(item.href);
               return (
@@ -311,27 +293,19 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     navigate(item.href);
                     setSidebarOpen(false);
                   }}
-                  className={`flex items-center space-x-4 w-full px-5 py-4 rounded-2xl transition-all duration-300 group relative overflow-hidden ${
+                  className={`flex items-center space-x-3 w-full px-4 py-3 rounded-xl transition-all duration-200 group relative ${
                     active
-                      ? 'bg-gradient-to-r from-white/25 to-white/15 text-white shadow-xl backdrop-blur-sm border border-white/30 scale-105'
-                      : 'text-orange-200 hover:text-white hover:bg-white/10 hover:shadow-md'
+                      ? `bg-gradient-to-r ${themeStyles.accent} text-white shadow-lg`
+                      : `${themeStyles.text} hover:bg-gray-100 ${theme === 'dark' ? 'hover:bg-gray-800' : ''}`
                   }`}
                 >
-                  {/* Moroccan accent line */}
-                  <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${item.color} transition-all duration-300 ${
-                    active ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                  }`}></div>
-                  
-                  <div className={`p-3 rounded-xl bg-gradient-to-br ${item.color} shadow-lg transition-transform duration-300 ${
-                    !active ? 'group-hover:scale-110' : ''
-                  }`}>
-                    <item.icon className="w-5 h-5 text-white" />
+                  <div className={`p-2 rounded-lg ${active ? 'bg-white/20' : `bg-gradient-to-br ${item.color}`} transition-all duration-200`}>
+                    <item.icon className={`w-5 h-5 ${active ? 'text-white' : 'text-white'}`} />
                   </div>
-                  <span className="font-semibold text-base">{item.label}</span>
+                  <span className="font-medium">{item.label}</span>
                   
-                  {/* Moroccan decorative element */}
                   {active && (
-                    <div className="absolute right-5 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg"></div>
+                    <div className="absolute right-3 w-2 h-2 bg-white rounded-full"></div>
                   )}
                 </button>
               );
@@ -339,54 +313,54 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </nav>
 
           {/* Bottom actions */}
-          <div className="p-4 border-t border-white/20 space-y-3 backdrop-blur-sm">
+          <div className="p-4 border-t border-gray-200/20 space-y-2">
             <button
               onClick={() => {
                 navigate('/dashboard/settings');
                 setSidebarOpen(false);
               }}
-              className={`flex items-center space-x-4 w-full px-5 py-4 rounded-2xl transition-all duration-300 group relative overflow-hidden ${
+              className={`flex items-center space-x-3 w-full px-4 py-3 rounded-xl transition-all duration-200 ${
                 isActiveItem('/dashboard/settings')
-                  ? 'bg-gradient-to-r from-white/25 to-white/15 text-white shadow-xl backdrop-blur-sm border border-white/30'
-                  : 'text-orange-200 hover:text-white hover:bg-white/10 hover:shadow-md'
+                  ? `bg-gradient-to-r ${themeStyles.accent} text-white shadow-lg`
+                  : `${themeStyles.text} hover:bg-gray-100 ${theme === 'dark' ? 'hover:bg-gray-800' : ''}`
               }`}
             >
-              <div className="p-3 rounded-xl bg-gradient-to-br from-gray-500 to-gray-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-gray-500 to-gray-600">
                 <Settings className="w-5 h-5 text-white" />
               </div>
-              <span className="font-semibold">Settings</span>
+              <span className="font-medium">Settings</span>
             </button>
             
             {/* Theme Selector */}
             <div className="relative">
               <button
                 onClick={() => setShowThemeSelector(!showThemeSelector)}
-                className="flex items-center space-x-4 w-full px-5 py-4 rounded-2xl text-orange-200 hover:text-white hover:bg-white/10 hover:shadow-md transition-all duration-300 group"
+                className={`flex items-center space-x-3 w-full px-4 py-3 rounded-xl transition-all duration-200 ${themeStyles.text} hover:bg-gray-100 ${theme === 'dark' ? 'hover:bg-gray-800' : ''}`}
               >
-                <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
-                  <PaletteIcon className="w-5 h-5 text-white" />
+                <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
+                  {theme === 'dark' ? <Moon className="w-5 h-5 text-white" /> : <Sun className="w-5 h-5 text-white" />}
                 </div>
-                <span className="font-semibold">Theme</span>
+                <span className="font-medium">Theme</span>
               </button>
               
               {showThemeSelector && (
-                <div className="absolute bottom-full left-0 right-0 mb-2 bg-white/95 backdrop-blur-sm rounded-xl border border-white/20 shadow-xl p-3 space-y-2">
+                <div className={`absolute bottom-full left-0 right-0 mb-2 ${themeStyles.card} backdrop-blur-sm rounded-xl border shadow-xl p-3 space-y-2`}>
                   {[
                     { id: 'light', name: 'Light', icon: Sun },
                     { id: 'dark', name: 'Dark', icon: Moon },
                     { id: 'moroccan', name: 'Moroccan', icon: Crown },
-                    { id: 'modern', name: 'Modern', icon: PaletteIcon }
+                    { id: 'modern', name: 'Modern', icon: Monitor }
                   ].map((themeOption) => (
                     <button
                       key={themeOption.id}
                       onClick={() => {
-                        setTheme(themeOption.id as Theme);
+                        setTheme(themeOption.id as any);
                         setShowThemeSelector(false);
                       }}
                       className={`flex items-center space-x-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ${
                         theme === themeOption.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? `bg-gradient-to-r ${themeStyles.accent} text-white`
+                          : `${themeStyles.text} hover:bg-gray-100 ${theme === 'dark' ? 'hover:bg-gray-800' : ''}`
                       }`}
                     >
                       <themeOption.icon className="w-4 h-4" />
@@ -399,12 +373,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-4 w-full px-5 py-4 rounded-2xl text-orange-200 hover:text-white hover:bg-red-500/20 transition-all duration-300 group"
+              className={`flex items-center space-x-3 w-full px-4 py-3 rounded-xl transition-all duration-200 ${themeStyles.text} hover:bg-red-50 hover:text-red-600 ${theme === 'dark' ? 'hover:bg-red-900/20' : ''}`}
             >
-              <div className="p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-red-500 to-red-600">
                 <LogOut className="w-5 h-5 text-white" />
               </div>
-              <span className="font-semibold">Logout</span>
+              <span className="font-medium">Logout</span>
             </button>
           </div>
         </div>
@@ -412,64 +386,55 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       {/* Main content */}
       <div className="lg:ml-72">
-        {/* Top bar with Moroccan design */}
-        <div className={`${themeStyles.topbar} backdrop-blur-xl border-b border-orange-200/50 shadow-lg transition-all duration-500`}>
+        {/* Top bar */}
+        <div className={`${themeStyles.topbar} backdrop-blur-xl border-b shadow-sm transition-all duration-300`}>
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="lg:hidden p-3 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className={`lg:hidden p-3 rounded-xl bg-gradient-to-br ${themeStyles.accent} text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105`}
                 >
                   <Menu className="w-5 h-5" />
                 </button>
-                
-                {/* Moroccan decorative elements */}
-                <div className="hidden md:flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <div className="w-4 h-4 border-2 border-white rounded-sm"></div>
-                  </div>
-                  <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full shadow-lg"></div>
-                  <div className="w-6 h-6 bg-gradient-to-br from-red-400 to-pink-500 rounded-lg rotate-45 shadow-lg"></div>
-                </div>
               </div>
               
               <div className="flex items-center space-x-4">
                 {/* Search */}
-                <div className="hidden md:flex items-center space-x-3 bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 border border-orange-200/50 shadow-lg">
-                  <Search className="w-4 h-4 text-orange-600" />
+                <div className={`hidden md:flex items-center space-x-3 ${themeStyles.card} backdrop-blur-sm rounded-xl px-4 py-3 border shadow-sm`}>
+                  <Search className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
                   <input 
                     type="text" 
                     placeholder="Search..." 
-                    className="bg-transparent border-none outline-none text-sm placeholder-orange-400 w-40 font-medium"
+                    className={`bg-transparent border-none outline-none text-sm placeholder-gray-400 w-40 font-medium ${themeStyles.text}`}
                   />
                 </div>
                 
                 {/* Notifications */}
-                <button className="relative p-3 rounded-2xl bg-white/70 backdrop-blur-sm border border-orange-200/50 hover:bg-white/80 transition-all duration-300 hover:scale-105 shadow-lg">
-                  <Bell className="w-5 h-5 text-orange-600" />
+                <button className={`relative p-3 rounded-xl ${themeStyles.card} border hover:shadow-md transition-all duration-300 hover:scale-105`}>
+                  <Bell className={`w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`} />
                   <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse shadow-lg flex items-center justify-center">
                     <span className="text-white text-xs font-bold">3</span>
                   </div>
                 </button>
                 
                 {user && (
-                  <div className="flex items-center space-x-3 bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 border border-orange-200/50 shadow-lg">
+                  <div className={`flex items-center space-x-3 ${themeStyles.card} backdrop-blur-sm rounded-xl px-4 py-3 border shadow-sm`}>
                     <div className="text-right hidden sm:block">
-                      <p className="text-sm font-bold text-gray-800">{user.name}</p>
+                      <p className={`text-sm font-bold ${themeStyles.text}`}>{user.name}</p>
                       <div className="flex items-center justify-end space-x-1 mt-1">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getRoleBadge(user.role).color}`}>
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getRoleBadge(user.role).color}`}>
                           {getRoleBadge(user.role).icon}
                           <span className="ml-1">{getRoleBadge(user.role).text}</span>
                         </span>
                       </div>
                     </div>
-                    <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center shadow-lg ring-2 ring-white/30">
+                    <div className={`w-12 h-12 bg-gradient-to-br ${themeStyles.accent} rounded-xl flex items-center justify-center shadow-lg`}>
                       {user.avatar ? (
                         <img 
                           src={user.avatar} 
                           alt={user.name}
-                          className="w-12 h-12 rounded-2xl object-cover"
+                          className="w-12 h-12 rounded-xl object-cover"
                         />
                       ) : (
                         <span className="text-white font-bold text-lg">
@@ -484,17 +449,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </div>
         </div>
 
-        {/* Page content with Moroccan styling */}
-        <main className="p-8 min-h-screen relative">
-          {/* Moroccan tile pattern background */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="w-full h-full" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23dc2626' fill-opacity='0.3'%3E%3Cpath d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm0 4L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0l28-28v2L54 40h-2zm4 0l24-24v2L58 40h-2zm4 0l20-20v2L62 40h-2zm4 0l16-16v2L66 40h-2zm4 0l12-12v2L70 40h-2zm4 0l8-8v2l-6 6h-2zm4 0l4-4v2L74 40h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-              backgroundSize: '80px 80px'
-            }}></div>
-          </div>
-          
-          <div className="relative z-10">
+        {/* Page content */}
+        <main className="p-8 min-h-screen">
+          <div className="max-w-7xl mx-auto">
             {children}
           </div>
         </main>
