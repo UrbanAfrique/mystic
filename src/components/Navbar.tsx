@@ -17,13 +17,14 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Accueil', href: '#home' },
-    { name: 'Qui sommes-nous', href: '#about' },
-    { name: 'Nos Services', href: '#services' },
+    { name: 'Home', href: '#home' },
+    { name: 'About Us', href: '#about' },
+    { name: 'Our Services', href: '#services' },
+    { name: 'Products', href: '/products' },
     { name: 'Destinations', href: '#destinations' },
-    { name: 'Hébergements', href: '#accommodations' },
-    { name: 'Activités', href: '#activities' },
-    { name: 'Gastronomie', href: '#gastronomy' },
+    { name: 'Accommodations', href: '#accommodations' },
+    { name: 'Activities', href: '#activities' },
+    { name: 'Gastronomy', href: '#gastronomy' },
     { name: 'Transport', href: '#transport' },
     { name: 'Contact', href: '#contact' },
   ];
@@ -70,10 +71,25 @@ const Navbar = () => {
             {/* Login Button */}
             <a
               href="/login"
-              className="ml-4 flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 font-medium"
+              className="ml-4 flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 font-medium relative"
             >
               <LogIn className="w-4 h-4" />
-              <span>Connexion</span>
+              <span>Login</span>
+            </a>
+            
+            {/* Cart Icon */}
+            <a
+              href="/cart"
+              className="ml-2 flex items-center space-x-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/90 transition-all duration-300 font-medium relative"
+            >
+              <div className="relative">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                </svg>
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  0
+                </span>
+              </div>
             </a>
           </div>
 

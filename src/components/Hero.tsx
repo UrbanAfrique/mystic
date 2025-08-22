@@ -26,11 +26,11 @@ const Hero = () => {
             </h1>
             <div className="w-24 h-px bg-white/60 mx-auto mb-8"></div>
             <p className="font-elegant text-xl md:text-2xl font-light tracking-[0.2em] opacity-90 mb-4">
-              Créateur de Voyages d'Exception au Maroc
+              Creator of Exceptional Journeys in Morocco
             </p>
             <p className="font-sans text-lg md:text-xl font-light opacity-80 max-w-2xl mx-auto leading-relaxed">
-              Depuis plus de 15 ans, nous révélons la beauté authentique du royaume chérifien 
-              à travers des expériences sur mesure d'un raffinement incomparable
+              For over 15 years, we have been revealing the authentic beauty of the Cherifian kingdom 
+              through tailor-made experiences of incomparable refinement
             </p>
           </div>
         </div>

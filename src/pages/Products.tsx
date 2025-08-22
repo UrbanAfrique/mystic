@@ -1,98 +1,131 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Search, Filter, MapPin, Star, Clock, Users } from 'lucide-react';
+import { Search, Filter, MapPin, Star, Clock, Users, ShoppingCart } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { useCart } from '@/contexts/CartContext';
+import { hotelsAPI, packagesAPI, transportAPI, foodAPI, artisanAPI, eventsAPI } from '@/services/api';
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { addItem } = useCart();
 
   useScrollAnimation();
 
   const categories = [
-    { id: 'all', name: 'Tous les produits', count: 24 },
-    { id: 'hotels', name: 'Hôtels & Riads', count: 8 },
-    { id: 'transport', name: 'Transport', count: 6 },
-    { id: 'packages', name: 'Forfaits', count: 5 },
-    { id: 'events', name: 'Événements', count: 3 },
-    { id: 'food', name: 'Gastronomie', count: 2 }
+    { id: 'all', name: 'All Products', count: 0 },
+    { id: 'hotels', name: 'Hotels & Riads', count: 0 },
+    { id: 'transport', name: 'Transport', count: 0 },
+    { id: 'packages', name: 'Packages', count: 0 },
+    { id: 'events', name: 'Events', count: 0 },
+    { id: 'food', name: 'Gastronomy', count: 0 },
+    { id: 'artisan', name: 'Artisan Crafts', count: 0 }
   ];
 
-  const products = [
-    {
-      id: 1,
-      category: 'hotels',
-      name: 'Riad Atlas Premium',
-      location: 'Marrakech, Médina',
-      price: '1,200 MAD/nuit',
-      rating: 4.8,
-      reviews: 124,
-      image: 'https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg',
-      description: 'Riad de luxe au cœur de la médina avec spa traditionnel',
-      features: ['Spa', 'Piscine', 'Restaurant', 'WiFi']
-    },
-    {
-      id: 2,
-      category: 'transport',
-      name: 'Bus Premium Marrakech-Casablanca',
-      location: 'Marrakech → Casablanca',
-      price: '120 MAD',
-      rating: 4.6,
-      reviews: 89,
-      image: 'https://images.pexels.com/photos/1134176/pexels-photo-1134176.jpeg',
-      description: 'Transport confortable avec WiFi et climatisation',
-      features: ['WiFi', 'Climatisation', 'Sièges inclinables']
-    },
-    {
-      id: 3,
-      category: 'packages',
-      name: 'Circuit Impérial 7 jours',
-      location: 'Marrakech, Fès, Rabat',
-      price: '4,500 MAD',
-      rating: 4.9,
-      reviews: 67,
-      image: 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg',
-      description: 'Découvrez les villes impériales du Maroc',
-      features: ['Guide', 'Hébergement', 'Transport', 'Repas']
-    },
-    {
-      id: 4,
-      category: 'events',
-      name: 'Festival Gnawa Essaouira',
-      location: 'Essaouira',
-      price: '150 MAD',
-      rating: 4.7,
-      reviews: 203,
-      image: 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg',
-      description: 'Festival de musique Gnawa avec artistes internationaux',
-      features: ['Concert', 'Artistes', 'Ambiance', 'Culture']
-    },
-    {
-      id: 5,
-      category: 'food',
-      name: 'Cours de Cuisine Traditionnelle',
-      location: 'Riad Marrakech',
-      price: '350 MAD',
-      rating: 4.8,
-      reviews: 45,
-      image: 'https://images.pexels.com/photos/1134176/pexels-photo-1134176.jpeg',
-      description: 'Apprenez à préparer un tajine authentique',
-      features: ['Ingrédients', 'Recettes', 'Dégustation', 'Certificat']
-    },
-    {
-      id: 6,
-      category: 'hotels',
-      name: 'Hotel Sahara Luxury',
-      location: 'Merzouga, Désert',
-      price: '2,800 MAD/nuit',
-      rating: 4.9,
-      reviews: 78,
-      image: 'https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg',
-      description: 'Hôtel de luxe au cœur du désert du Sahara',
-      features: ['Vue désert', 'Excursions', 'Restaurant', 'Spa']
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory]);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      let allProducts: any[] = [];
+
+      if (selectedCategory === 'all' || selectedCategory === 'hotels') {
+        const hotels = await hotelsAPI.getAll();
+        const hotelProducts = (hotels.content || hotels || []).map((hotel: any) => ({
+          ...hotel,
+          category: 'hotels',
+          type: 'hotel',
+          location: `${hotel.city}, ${hotel.region || 'Morocco'}`,
+          price: hotel.basePrice || 0,
+          currency: hotel.currency || 'MAD',
+          image: hotel.images?.[0]?.url || 'https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg'
+        }));
+        allProducts = [...allProducts, ...hotelProducts];
+      }
+
+      if (selectedCategory === 'all' || selectedCategory === 'packages') {
+        const packages = await packagesAPI.getAll();
+        const packageProducts = (packages.content || packages || []).map((pkg: any) => ({
+          ...pkg,
+          category: 'packages',
+          type: 'package',
+          location: 'Morocco',
+          price: pkg.basePrice || pkg.price || 0,
+          currency: pkg.currency || 'MAD',
+          image: pkg.images?.[0]?.url || 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg'
+        }));
+        allProducts = [...allProducts, ...packageProducts];
+      }
+
+      if (selectedCategory === 'all' || selectedCategory === 'transport') {
+        const transports = await transportAPI.getAll();
+        const transportProducts = (transports.items || transports || []).map((transport: any) => ({
+          ...transport,
+          category: 'transport',
+          type: 'transport',
+          location: transport.city || 'Morocco',
+          price: transport.price || 0,
+          currency: transport.currency || 'MAD',
+          image: 'https://images.pexels.com/photos/1134176/pexels-photo-1134176.jpeg'
+        }));
+        allProducts = [...allProducts, ...transportProducts];
+      }
+
+      if (selectedCategory === 'all' || selectedCategory === 'food') {
+        const foods = await foodAPI.getAll();
+        const foodProducts = (foods.content || foods || []).map((food: any) => ({
+          ...food,
+          category: 'food',
+          type: 'food',
+          location: food.location || 'Morocco',
+          price: food.price || 0,
+          currency: food.currency || 'MAD',
+          image: food.images?.[0]?.url || 'https://images.pexels.com/photos/1134176/pexels-photo-1134176.jpeg'
+        }));
+        allProducts = [...allProducts, ...foodProducts];
+      }
+
+      if (selectedCategory === 'all' || selectedCategory === 'artisan') {
+        const artisans = await artisanAPI.getAll();
+        const artisanProducts = (artisans.items || artisans || []).map((artisan: any) => ({
+          ...artisan,
+          category: 'artisan',
+          type: 'artisan',
+          location: artisan.origin || 'Morocco',
+          price: artisan.price || 0,
+          currency: artisan.currency || 'MAD',
+          image: artisan.images?.[0]?.url || 'https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg'
+        }));
+        allProducts = [...allProducts, ...artisanProducts];
+      }
+
+      if (selectedCategory === 'all' || selectedCategory === 'events') {
+        const events = await eventsAPI.getAll();
+        const eventProducts = (events.content || events || []).map((event: any) => ({
+          ...event,
+          category: 'events',
+          type: 'event',
+          location: `${event.city}, ${event.venue}`,
+          price: event.tickets?.[0]?.price || 0,
+          currency: event.tickets?.[0]?.currency || 'MAD',
+          image: event.images?.[0]?.url || 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg'
+        }));
+        allProducts = [...allProducts, ...eventProducts];
+      }
+
+      setProducts(allProducts);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
@@ -100,6 +133,18 @@ const Products = () => {
                          product.location.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  const handleAddToCart = (product: any) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      currency: product.currency,
+      type: product.type,
+      image: product.image,
+      description: product.description
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -110,10 +155,10 @@ const Products = () => {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-4xl mx-auto fade-in-up">
             <h1 className="font-serif text-5xl md:text-6xl font-bold text-foreground mb-6">
-              Nos Produits & Services
+              Our Products & Services
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Découvrez notre sélection d'expériences authentiques au Maroc
+              Discover our selection of authentic experiences in Morocco
             </p>
             
             {/* Search Bar */}
@@ -121,7 +166,7 @@ const Products = () => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <input
                 type="text"
-                placeholder="Rechercher un produit, une destination..."
+                placeholder="Search for a product, destination..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 bg-background/80 backdrop-blur-sm border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-lg"
@@ -146,79 +191,81 @@ const Products = () => {
                     : 'bg-background border border-border hover:border-primary hover:shadow-md'
                 }`}
               >
-                {category.name} ({category.count})
+                {category.name}
               </button>
             ))}
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((product, index) => (
-              <div
-                key={product.id}
-                className="group bg-background rounded-xl border border-border overflow-hidden hover:shadow-luxury transition-all duration-500 hover:scale-105 fade-in-up"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                      <span className="text-sm font-medium">{product.rating}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="font-bold text-foreground text-lg mb-1 group-hover:text-primary transition-colors duration-300">
-                        {product.name}
-                      </h3>
-                      <div className="flex items-center text-muted-foreground text-sm">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {product.location}
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <p className="mt-4 text-muted-foreground">Loading products...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProducts.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="group bg-background rounded-xl border border-border overflow-hidden hover:shadow-luxury transition-all duration-500 hover:scale-105 fade-in-up"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute top-4 right-4 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                      <div className="flex items-center space-x-1">
+                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <span className="text-sm font-medium">{product.rating || '4.5'}</span>
                       </div>
                     </div>
                   </div>
-
-                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {product.features.slice(0, 3).map((feature, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-lg"
-                      >
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div>
-                      <span className="text-lg font-bold text-primary">{product.price}</span>
-                      <p className="text-xs text-muted-foreground">{product.reviews} avis</p>
+                  
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-bold text-foreground text-lg mb-1 group-hover:text-primary transition-colors duration-300">
+                          {product.name}
+                        </h3>
+                        <div className="flex items-center text-muted-foreground text-sm">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          {product.location}
+                        </div>
+                      </div>
                     </div>
-                    <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 transform hover:scale-105">
-                      Réserver
-                    </button>
+
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                      {product.description}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
+                      <div>
+                        <span className="text-lg font-bold text-primary">
+                          {product.price} {product.currency}
+                        </span>
+                        <p className="text-xs text-muted-foreground capitalize">{product.type}</p>
+                      </div>
+                      <button 
+                        onClick={() => handleAddToCart(product)}
+                        className="flex items-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 transform hover:scale-105"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        <span>Add to Cart</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Load More */}
           <div className="text-center mt-12 fade-in-up">
             <button className="px-8 py-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all duration-300 transform hover:scale-105">
-              Voir plus de produits
+              View More Products
             </button>
           </div>
         </div>

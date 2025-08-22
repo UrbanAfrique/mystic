@@ -19,12 +19,16 @@ import {
   Mail,
   Phone,
   MapPin,
-  Crown,
+  Crown, 
+  Palette as PaletteIcon,
+  Moon,
+  Sun,
   Bell,
   Search
 } from 'lucide-react';
 import { getCurrentUser, isAuthenticated, logout as doLogout } from "@/services/auth";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -55,8 +59,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showThemeSelector, setShowThemeSelector] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -75,14 +81,14 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   }, [navigate]);
 
   const menuItems = [
-    { icon: Home, label: 'Tableau de bord', href: '/dashboard', color: 'from-blue-500 to-blue-600' },
-    { icon: BarChart3, label: 'Statistiques', href: '/dashboard/statistics', color: 'from-green-500 to-green-600' },
-    { icon: Calendar, label: 'Événements', href: '/dashboard/events', color: 'from-purple-500 to-purple-600' },
+    { icon: Home, label: 'Dashboard', href: '/dashboard', color: 'from-blue-500 to-blue-600' },
+    { icon: BarChart3, label: 'Statistics', href: '/dashboard/statistics', color: 'from-green-500 to-green-600' },
+    { icon: Calendar, label: 'Events', href: '/dashboard/events', color: 'from-purple-500 to-purple-600' },
     { icon: Car, label: 'Transport', href: '/dashboard/transport', color: 'from-orange-500 to-orange-600' },
-    { icon: Package, label: 'Forfaits', href: '/dashboard/packages', color: 'from-pink-500 to-pink-600' },
-    { icon: Palette, label: 'Artisanat', href: '/dashboard/artisan', color: 'from-indigo-500 to-indigo-600' },
-    { icon: UtensilsCrossed, label: 'Gastronomie', href: '/dashboard/food', color: 'from-red-500 to-red-600' },
-    { icon: Ticket, label: 'Billetterie', href: '/dashboard/tickets', color: 'from-yellow-500 to-yellow-600' },
+    { icon: Package, label: 'Packages', href: '/dashboard/packages', color: 'from-pink-500 to-pink-600' },
+    { icon: Palette, label: 'Artisan Crafts', href: '/dashboard/artisan', color: 'from-indigo-500 to-indigo-600' },
+    { icon: UtensilsCrossed, label: 'Gastronomy', href: '/dashboard/food', color: 'from-red-500 to-red-600' },
+    { icon: Ticket, label: 'Ticketing', href: '/dashboard/tickets', color: 'from-yellow-500 to-yellow-600' },
   ];
 
   const handleLogout = () => {
@@ -112,17 +118,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const getRoleBadge = (role: string) => {
     const roleMap: { [key: string]: { text: string; color: string; icon: React.ReactNode } } = {
       'ROLE_SELLER': { 
-        text: 'Vendeur', 
+        text: 'Seller', 
         color: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white',
         icon: <Building className="w-3 h-3" />
       },
       'ROLE_ADMIN': { 
-        text: 'Administrateur', 
+        text: 'Administrator', 
         color: 'bg-gradient-to-r from-purple-500 to-purple-600 text-white',
         icon: <Crown className="w-3 h-3" />
       },
       'ROLE_USER': { 
-        text: 'Utilisateur', 
+        text: 'User', 
         color: 'bg-gradient-to-r from-gray-500 to-gray-600 text-white',
         icon: <User className="w-3 h-3" />
       }
@@ -135,6 +141,44 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return location.pathname === href;
   };
 
+  const getThemeStyles = () => {
+    switch (theme) {
+      case 'dark':
+        return {
+          sidebar: 'bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900',
+          topbar: 'bg-gray-800/90',
+          background: 'bg-gray-900',
+          card: 'bg-gray-800 border-gray-700',
+          text: 'text-gray-100'
+        };
+      case 'moroccan':
+        return {
+          sidebar: 'bg-gradient-to-b from-orange-900 via-red-900 to-yellow-900',
+          topbar: 'bg-orange-800/90',
+          background: 'bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50',
+          card: 'bg-white/80 border-orange-200/50',
+          text: 'text-gray-800'
+        };
+      case 'modern':
+        return {
+          sidebar: 'bg-gradient-to-b from-slate-900 via-blue-900 to-indigo-900',
+          topbar: 'bg-slate-800/90',
+          background: 'bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50',
+          card: 'bg-white border-slate-200',
+          text: 'text-slate-800'
+        };
+      default:
+        return {
+          sidebar: 'bg-gradient-to-b from-orange-900 via-red-900 to-yellow-900',
+          topbar: 'bg-white/80',
+          background: 'bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50',
+          card: 'bg-white border-orange-200/50',
+          text: 'text-gray-800'
+        };
+    }
+  };
+
+  const themeStyles = getThemeStyles();
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 flex items-center justify-center">
@@ -147,7 +191,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+    <div className={`min-h-screen ${themeStyles.background} transition-all duration-500`}>
       {/* Moroccan Pattern Overlay */}
       <div className="fixed inset-0 opacity-5 pointer-events-none">
         <div className="w-full h-full" style={{
@@ -165,7 +209,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-gradient-to-b from-orange-900 via-red-900 to-yellow-900 shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 ${themeStyles.sidebar} shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Moroccan Geometric Pattern */}
@@ -178,16 +222,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
         <div className="flex flex-col h-full relative z-10">
           {/* Logo */}
-          <div className="flex items-center justify-between p-6 border-b border-white/20">
+          <div className="flex items-center justify-between p-6 border-b border-white/20 backdrop-blur-sm">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
-                <div className="w-6 h-6 bg-white rounded-sm opacity-90"></div>
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-white/20">
+                <span className="text-white font-bold text-lg">M</span>
               </div>
               <div>
-                <h1 className="font-serif text-xl font-bold text-white">
+                <h1 className="font-serif text-xl font-bold text-white tracking-wide">
                   MystigTravel
                 </h1>
-                <p className="text-orange-200 text-xs">Dashboard</p>
+                <p className="text-orange-200 text-xs font-medium">Admin Panel</p>
               </div>
             </div>
             <button
@@ -200,18 +244,18 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
           {/* User Profile Section */}
           {user && (
-            <div className="p-6 border-b border-white/20">
+            <div className="p-6 border-b border-white/20 backdrop-blur-sm">
               <div className="flex items-center space-x-4 mb-4">
                 <div className="relative">
-                  <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg ring-4 ring-white/20">
+                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-xl ring-4 ring-white/20">
                     {user.avatar ? (
                       <img 
                         src={user.avatar} 
                         alt={user.name}
-                        className="w-14 h-14 rounded-full object-cover"
+                        className="w-16 h-16 rounded-2xl object-cover"
                       />
                     ) : (
-                      <span className="text-white font-bold text-lg">
+                      <span className="text-white font-bold text-xl">
                         {getUserInitials(user.name)}
                       </span>
                     )}
@@ -223,9 +267,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white font-semibold truncate">{user.name}</p>
+                  <p className="text-white font-bold text-lg truncate">{user.name}</p>
                   <div className="flex items-center space-x-1 mt-1">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${getRoleBadge(user.role).color}`}>
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getRoleBadge(user.role).color}`}>
                       {getRoleBadge(user.role).icon}
                       <span className="ml-1">{getRoleBadge(user.role).text}</span>
                     </span>
@@ -233,21 +277,21 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </div>
               </div>
               
-              <div className="space-y-2 text-sm">
+              <div className="space-y-3 text-sm">
                 {user.businessInfo.companyName && (
-                  <div className="flex items-center text-orange-200">
+                  <div className="flex items-center text-orange-200 bg-white/10 rounded-lg px-3 py-2">
                     <Building className="w-4 h-4 mr-2" />
                     <span className="truncate">{user.businessInfo.companyName}</span>
                   </div>
                 )}
                 
-                <div className="flex items-center text-orange-200">
+                <div className="flex items-center text-orange-200 bg-white/10 rounded-lg px-3 py-2">
                   <Mail className="w-4 h-4 mr-2" />
                   <span className="truncate">{user.email}</span>
                 </div>
                 
                 {user.phone && (
-                  <div className="flex items-center text-orange-200">
+                  <div className="flex items-center text-orange-200 bg-white/10 rounded-lg px-3 py-2">
                     <Phone className="w-4 h-4 mr-2" />
                     <span>{user.phone}</span>
                   </div>
@@ -257,7 +301,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           )}
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          <nav className="flex-1 p-4 space-y-3 overflow-y-auto">
             {menuItems.map((item) => {
               const active = isActiveItem(item.href);
               return (
@@ -267,9 +311,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     navigate(item.href);
                     setSidebarOpen(false);
                   }}
-                  className={`flex items-center space-x-4 w-full px-4 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+                  className={`flex items-center space-x-4 w-full px-5 py-4 rounded-2xl transition-all duration-300 group relative overflow-hidden ${
                     active
-                      ? 'bg-gradient-to-r from-white/20 to-white/10 text-white shadow-lg backdrop-blur-sm border border-white/20'
+                      ? 'bg-gradient-to-r from-white/25 to-white/15 text-white shadow-xl backdrop-blur-sm border border-white/30 scale-105'
                       : 'text-orange-200 hover:text-white hover:bg-white/10 hover:shadow-md'
                   }`}
                 >
@@ -278,16 +322,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     active ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                   }`}></div>
                   
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${item.color} shadow-lg transition-transform duration-300 ${
+                  <div className={`p-3 rounded-xl bg-gradient-to-br ${item.color} shadow-lg transition-transform duration-300 ${
                     !active ? 'group-hover:scale-110' : ''
                   }`}>
                     <item.icon className="w-5 h-5 text-white" />
                   </div>
-                  <span className="font-medium">{item.label}</span>
+                  <span className="font-semibold text-base">{item.label}</span>
                   
                   {/* Moroccan decorative element */}
                   {active && (
-                    <div className="absolute right-4 w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+                    <div className="absolute right-5 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg"></div>
                   )}
                 </button>
               );
@@ -295,31 +339,72 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </nav>
 
           {/* Bottom actions */}
-          <div className="p-4 border-t border-white/20 space-y-2">
+          <div className="p-4 border-t border-white/20 space-y-3 backdrop-blur-sm">
             <button
               onClick={() => {
                 navigate('/dashboard/settings');
                 setSidebarOpen(false);
               }}
-              className={`flex items-center space-x-4 w-full px-4 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+              className={`flex items-center space-x-4 w-full px-5 py-4 rounded-2xl transition-all duration-300 group relative overflow-hidden ${
                 isActiveItem('/dashboard/settings')
-                  ? 'bg-gradient-to-r from-white/20 to-white/10 text-white shadow-lg backdrop-blur-sm border border-white/20'
+                  ? 'bg-gradient-to-r from-white/25 to-white/15 text-white shadow-xl backdrop-blur-sm border border-white/30'
                   : 'text-orange-200 hover:text-white hover:bg-white/10 hover:shadow-md'
               }`}
             >
-              <div className="p-2 rounded-lg bg-gradient-to-br from-gray-500 to-gray-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-gray-500 to-gray-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
                 <Settings className="w-5 h-5 text-white" />
               </div>
-              <span className="font-medium">Paramètres</span>
+              <span className="font-semibold">Settings</span>
             </button>
+            
+            {/* Theme Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setShowThemeSelector(!showThemeSelector)}
+                className="flex items-center space-x-4 w-full px-5 py-4 rounded-2xl text-orange-200 hover:text-white hover:bg-white/10 hover:shadow-md transition-all duration-300 group"
+              >
+                <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+                  <PaletteIcon className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-semibold">Theme</span>
+              </button>
+              
+              {showThemeSelector && (
+                <div className="absolute bottom-full left-0 right-0 mb-2 bg-white/95 backdrop-blur-sm rounded-xl border border-white/20 shadow-xl p-3 space-y-2">
+                  {[
+                    { id: 'light', name: 'Light', icon: Sun },
+                    { id: 'dark', name: 'Dark', icon: Moon },
+                    { id: 'moroccan', name: 'Moroccan', icon: Crown },
+                    { id: 'modern', name: 'Modern', icon: PaletteIcon }
+                  ].map((themeOption) => (
+                    <button
+                      key={themeOption.id}
+                      onClick={() => {
+                        setTheme(themeOption.id as Theme);
+                        setShowThemeSelector(false);
+                      }}
+                      className={`flex items-center space-x-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ${
+                        theme === themeOption.id
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <themeOption.icon className="w-4 h-4" />
+                      <span className="font-medium">{themeOption.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-4 w-full px-4 py-4 rounded-xl text-orange-200 hover:text-white hover:bg-red-500/20 transition-all duration-300 group"
+              className="flex items-center space-x-4 w-full px-5 py-4 rounded-2xl text-orange-200 hover:text-white hover:bg-red-500/20 transition-all duration-300 group"
             >
-              <div className="p-2 rounded-lg bg-gradient-to-br from-red-500 to-red-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
                 <LogOut className="w-5 h-5 text-white" />
               </div>
-              <span className="font-medium">Déconnexion</span>
+              <span className="font-semibold">Logout</span>
             </button>
           </div>
         </div>
@@ -328,64 +413,66 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Main content */}
       <div className="lg:ml-72">
         {/* Top bar with Moroccan design */}
-        <div className="bg-white/80 backdrop-blur-xl border-b border-orange-200/50 shadow-lg">
+        <div className={`${themeStyles.topbar} backdrop-blur-xl border-b border-orange-200/50 shadow-lg transition-all duration-500`}>
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="lg:hidden p-3 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="lg:hidden p-3 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   <Menu className="w-5 h-5" />
                 </button>
                 
                 {/* Moroccan decorative elements */}
-                <div className="hidden md:flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center">
+                <div className="hidden md:flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center shadow-lg">
                     <div className="w-4 h-4 border-2 border-white rounded-sm"></div>
                   </div>
-                  <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full"></div>
-                  <div className="w-4 h-4 bg-gradient-to-br from-red-400 to-pink-500 rounded-sm rotate-45"></div>
+                  <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full shadow-lg"></div>
+                  <div className="w-6 h-6 bg-gradient-to-br from-red-400 to-pink-500 rounded-lg rotate-45 shadow-lg"></div>
                 </div>
               </div>
               
               <div className="flex items-center space-x-4">
                 {/* Search */}
-                <div className="hidden md:flex items-center space-x-3 bg-white/60 backdrop-blur-sm rounded-xl px-4 py-2 border border-orange-200/50">
+                <div className="hidden md:flex items-center space-x-3 bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 border border-orange-200/50 shadow-lg">
                   <Search className="w-4 h-4 text-orange-600" />
                   <input 
                     type="text" 
-                    placeholder="Rechercher..." 
-                    className="bg-transparent border-none outline-none text-sm placeholder-orange-400 w-32"
+                    placeholder="Search..." 
+                    className="bg-transparent border-none outline-none text-sm placeholder-orange-400 w-40 font-medium"
                   />
                 </div>
                 
                 {/* Notifications */}
-                <button className="relative p-3 rounded-xl bg-white/60 backdrop-blur-sm border border-orange-200/50 hover:bg-white/80 transition-all duration-300 hover:scale-105">
+                <button className="relative p-3 rounded-2xl bg-white/70 backdrop-blur-sm border border-orange-200/50 hover:bg-white/80 transition-all duration-300 hover:scale-105 shadow-lg">
                   <Bell className="w-5 h-5 text-orange-600" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse shadow-lg flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">3</span>
+                  </div>
                 </button>
                 
                 {user && (
-                  <div className="flex items-center space-x-3 bg-white/60 backdrop-blur-sm rounded-xl px-4 py-2 border border-orange-200/50">
+                  <div className="flex items-center space-x-3 bg-white/70 backdrop-blur-sm rounded-2xl px-5 py-3 border border-orange-200/50 shadow-lg">
                     <div className="text-right hidden sm:block">
-                      <p className="text-sm font-semibold text-gray-800">{user.name}</p>
+                      <p className="text-sm font-bold text-gray-800">{user.name}</p>
                       <div className="flex items-center justify-end space-x-1 mt-1">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${getRoleBadge(user.role).color}`}>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getRoleBadge(user.role).color}`}>
                           {getRoleBadge(user.role).icon}
                           <span className="ml-1">{getRoleBadge(user.role).text}</span>
                         </span>
                       </div>
                     </div>
-                    <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center shadow-lg ring-2 ring-white/30">
+                    <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center shadow-lg ring-2 ring-white/30">
                       {user.avatar ? (
                         <img 
                           src={user.avatar} 
                           alt={user.name}
-                          className="w-10 h-10 rounded-full object-cover"
+                          className="w-12 h-12 rounded-2xl object-cover"
                         />
                       ) : (
-                        <span className="text-white font-medium">
+                        <span className="text-white font-bold text-lg">
                           {getUserInitials(user.name)}
                         </span>
                       )}
@@ -398,7 +485,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
 
         {/* Page content with Moroccan styling */}
-        <main className="p-6 min-h-screen relative">
+        <main className="p-8 min-h-screen relative">
           {/* Moroccan tile pattern background */}
           <div className="absolute inset-0 opacity-5">
             <div className="w-full h-full" style={{

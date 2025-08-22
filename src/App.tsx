@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RequireAuth from "./components/RequireAuth";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import Cart from "./pages/Cart";
 import Index from "./pages/Index";
 import Products from "./pages/Products";
 import Hotels from "./pages/products/Hotels";
@@ -25,32 +27,35 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/hotels" element={<Hotels />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-            <Route path="/dashboard/statistics" element={<Statistics />} />
-            <Route path="/dashboard/events" element={<Events />} />
-            <Route path="/dashboard/transport" element={<TransportList />} />
-            <Route path="/dashboard/transport/create" element={<CreateTransport />} />
-            <Route path="/dashboard/packages" element={<Packages />} />
-            <Route path="/dashboard/artisan" element={<Artisan />} />
-            <Route path="/dashboard/food" element={<Food />} />
-            <Route path="/dashboard/tickets" element={<Tickets />} />
-            <Route path="/dashboard/settings" element={<Settings />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/hotels" element={<Hotels />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+              <Route path="/dashboard/statistics" element={<Statistics />} />
+              <Route path="/dashboard/events" element={<Events />} />
+              <Route path="/dashboard/transport" element={<TransportList />} />
+              <Route path="/dashboard/transport/create" element={<CreateTransport />} />
+              <Route path="/dashboard/packages" element={<Packages />} />
+              <Route path="/dashboard/artisan" element={<Artisan />} />
+              <Route path="/dashboard/food" element={<Food />} />
+              <Route path="/dashboard/tickets" element={<Tickets />} />
+              <Route path="/dashboard/settings" element={<Settings />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
