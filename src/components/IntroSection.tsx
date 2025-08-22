@@ -30,7 +30,6 @@ const IntroSection = () => {
               </p>
             </div>
           </div>
-          </p>
         </div>
       </div>
     </section>
