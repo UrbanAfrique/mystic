@@ -103,10 +103,10 @@ const Login = () => {
                   />
                   <button
                     type="button"
-                    <span className="ml-2 text-sm text-muted-foreground">Remember me</span>
+                    onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-300"
                   >
-                    Forgot password?
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
@@ -128,7 +128,7 @@ const Login = () => {
                 type="submit"
                 className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:bg-primary/90 transition-all duration-300 transform hover:scale-105"
               >
-                  Sign In
+                Sign In
               </button>
             </form>
 
