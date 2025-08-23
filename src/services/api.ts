@@ -10,7 +10,7 @@ const removeRefreshToken = () => localStorage.removeItem('refreshToken');
 
 // API request helper with JWT/refresh support
 // API request helper with JWT/refresh support
-const apiRequest = async (endpoint: string, options: RequestInit = {}, retry = true): Promise<any> => {
+export const apiRequest = async (endpoint: string, options: RequestInit = {}, retry = true): Promise<any> => {
   const token = getAccessToken();
   const config: RequestInit = {
     headers: {
