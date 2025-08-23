@@ -11,6 +11,7 @@ import DestinationsGrid from '@/components/DestinationsGrid';
 import AccommodationsSection from '@/components/AccommodationsSection';
 import GastronomySection from '@/components/GastronomySection';
 import TransportSection from '@/components/TransportSection';
+import PlanBSection from '@/components/PlanBSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
@@ -56,6 +57,7 @@ const Index = () => {
       <AccommodationsSection />
       <GastronomySection />
       <TransportSection />
+      <PlanBSection />
       <ContactSection />
       <Footer />
     </div>

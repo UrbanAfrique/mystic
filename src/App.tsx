@@ -18,6 +18,11 @@ import Events from "./pages/dashboard/Events";
 import TransportList from "./pages/dashboard/transport/TransportList";
 import CreateTransport from "./pages/dashboard/transport/CreateTransport";
 import Packages from "./pages/dashboard/Packages";
+import Demands from "./pages/dashboard/Demands";
+import SpecialPackages from "./pages/dashboard/SpecialPackages";
+import Cities from "./pages/dashboard/Cities";
+import Activities from "./pages/dashboard/Activities";
+import Services from "./pages/dashboard/Services";
 import Artisan from "./pages/dashboard/Artisan";
 import Food from "./pages/dashboard/Food";
 import Tickets from "./pages/dashboard/Tickets";
@@ -43,9 +48,14 @@ const App = () => (
                 <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
                 <Route path="/dashboard/statistics" element={<Statistics />} />
+                <Route path="/dashboard/demands" element={<Demands />} />
+                <Route path="/dashboard/special-packages" element={<SpecialPackages />} />
                 <Route path="/dashboard/events" element={<Events />} />
                 <Route path="/dashboard/transport" element={<TransportList />} />
                 <Route path="/dashboard/transport/create" element={<CreateTransport />} />
+                <Route path="/dashboard/cities" element={<Cities />} />
+                <Route path="/dashboard/activities" element={<Activities />} />
+                <Route path="/dashboard/services" element={<Services />} />
                 <Route path="/dashboard/packages" element={<Packages />} />
                 <Route path="/dashboard/artisan" element={<Artisan />} />
                 <Route path="/dashboard/food" element={<Food />} />

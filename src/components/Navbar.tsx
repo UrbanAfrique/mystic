@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Search, LogIn, ChevronDown } from 'lucide-react';
 import SearchOverlay from './SearchOverlay';
+import PlanAForm from './PlanAForm';
 import { useCart } from '@/contexts/CartContext';
 
 const Navbar = () => {
@@ -8,6 +9,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showProductsMenu, setShowProductsMenu] = useState(false);
+  const [showPlanAForm, setShowPlanAForm] = useState(false);
   const { getTotalItems } = useCart();
 
   useEffect(() => {
@@ -42,6 +44,7 @@ const Navbar = () => {
     { name: 'Activities', href: '#activities' },
     { name: 'Gastronomy', href: '#gastronomy' },
     { name: 'Transport', href: '#transport' },
+    { name: 'Plan A', href: '#', onClick: () => setShowPlanAForm(true) },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -66,16 +69,26 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <div key={link.name} className="relative group">
-                <a
+                {link.onClick ? (
+                  <button
+                    onClick={link.onClick}
+                    className="text-foreground font-light text-sm tracking-wide uppercase hover:text-primary transition-all duration-300 relative flex items-center space-x-1"
+                  >
+                    <span>{link.name}</span>
+                    <span className="absolute -bottom-2 left-1/2 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+                  </button>
+                ) : (
+                  <a
                   href={link.href}
                   className="text-foreground font-light text-sm tracking-wide uppercase hover:text-primary transition-all duration-300 relative flex items-center space-x-1"
                   onMouseEnter={() => link.hasSubmenu && setShowProductsMenu(true)}
                   onMouseLeave={() => link.hasSubmenu && setShowProductsMenu(false)}
-                >
+                  >
                   <span>{link.name}</span>
                   {link.hasSubmenu && <ChevronDown className="w-4 h-4" />}
                   <span className="absolute -bottom-2 left-1/2 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
-                </a>
+                  </a>
+                )}
                 
                 {/* Products Submenu */}
                 {link.hasSubmenu && showProductsMenu && (
@@ -178,16 +191,31 @@ const Navbar = () => {
             <div className="space-y-4">
               {navLinks.map((link, index) => (
                 <div key={link.name}>
-                  <a
+                  {link.onClick ? (
+                    <button
+                      onClick={() => {
+                        link.onClick();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="block text-foreground font-light text-lg tracking-wide uppercase hover:text-primary transition-all duration-300 hover:translate-x-2 w-full text-left"
+                      style={{
+                        transitionDelay: `${index * 50}ms`
+                      }}
+                    >
+                      {link.name}
+                    </button>
+                  ) : (
+                    <a
                     href={link.href}
                     className="block text-foreground font-light text-lg tracking-wide uppercase hover:text-primary transition-all duration-300 hover:translate-x-2"
                     onClick={() => setIsMobileMenuOpen(false)}
                     style={{
                       transitionDelay: `${index * 50}ms`
                     }}
-                  >
+                    >
                     {link.name}
-                  </a>
+                    </a>
+                  )}
                   {link.hasSubmenu && (
                     <div className="ml-4 mt-2 space-y-2">
                       {link.submenu?.map((sublink) => (
@@ -211,6 +239,9 @@ const Navbar = () => {
       
       {/* Search Overlay */}
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      
+      {/* Plan A Form */}
+      <PlanAForm isOpen={showPlanAForm} onClose={() => setShowPlanAForm(false)} />
     </nav>
   );
 };

@@ -25,7 +25,10 @@ import {
   Bell,
   Search,
   Monitor,
-  Smartphone
+  Smartphone,
+  Users,
+  Activity,
+  Briefcase
 } from 'lucide-react';
 import { getCurrentUser, isAuthenticated, logout as doLogout } from "@/services/auth";
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -84,12 +87,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const menuItems = [
     { icon: Home, label: 'Dashboard', href: '/dashboard', color: 'from-blue-500 to-blue-600' },
     { icon: BarChart3, label: 'Statistics', href: '/dashboard/statistics', color: 'from-green-500 to-green-600' },
+    { icon: Users, label: 'Client Demands', href: '/dashboard/demands', color: 'from-cyan-500 to-cyan-600' },
+    { icon: Package, label: 'Special Packages', href: '/dashboard/special-packages', color: 'from-violet-500 to-violet-600' },
     { icon: Calendar, label: 'Events', href: '/dashboard/events', color: 'from-purple-500 to-purple-600' },
     { icon: Car, label: 'Transport', href: '/dashboard/transport', color: 'from-orange-500 to-orange-600' },
-    { icon: Package, label: 'Packages', href: '/dashboard/packages', color: 'from-pink-500 to-pink-600' },
+    { icon: MapPin, label: 'Cities', href: '/dashboard/cities', color: 'from-emerald-500 to-emerald-600' },
+    { icon: Activity, label: 'Activities', href: '/dashboard/activities', color: 'from-amber-500 to-amber-600' },
+    { icon: Briefcase, label: 'Services', href: '/dashboard/services', color: 'from-teal-500 to-teal-600' },
     { icon: Palette, label: 'Artisan Crafts', href: '/dashboard/artisan', color: 'from-indigo-500 to-indigo-600' },
     { icon: UtensilsCrossed, label: 'Gastronomy', href: '/dashboard/food', color: 'from-red-500 to-red-600' },
     { icon: Ticket, label: 'Ticketing', href: '/dashboard/tickets', color: 'from-yellow-500 to-yellow-600' },
+    { icon: Package, label: 'Packages', href: '/dashboard/packages', color: 'from-pink-500 to-pink-600' },
   ];
 
   const handleLogout = () => {
