@@ -107,3 +107,24 @@ export const hotelsAPI = {
       body: JSON.stringify(reviewData),
     }),
 };
+
+// Transport API
+export const transportAPI = {
+  getAll: async (params?: Record<string, any>) => {
+    const qs = params ? '?' + new URLSearchParams(params as any).toString() : '';
+    return apiRequest(`/transport${qs}`);
+  },
+  getById: async (id: string) => apiRequest(`/transport/${id}`),
+  create: async (data: any) =>
+    apiRequest('/transport', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  update: async (id: string, data: any) =>
+    apiRequest(`/transport/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+  delete: async (id: string) =>
+    apiRequest(`/transport/${id}`, { method: 'DELETE' }),
+};
