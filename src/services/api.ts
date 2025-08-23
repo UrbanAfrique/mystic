@@ -134,6 +134,31 @@ export const usersAPI = {
       body: JSON.stringify({ isActive }),
     }),
 };
+// Hotels API
+export const hotelsAPI = {
+  getAll: async (params?: Record<string, any>) => {
+    const qs = params ? '?' + new URLSearchParams(params as any).toString() : '';
+    return apiRequest(`/hotels${qs}`);
+  },
+  getById: async (id: string) => apiRequest(`/hotels/${id}`),
+  create: async (hotelData: any) =>
+    apiRequest('/hotels', {
+      method: 'POST',
+      body: JSON.stringify(hotelData),
+    }),
+  update: async (id: string, hotelData: any) =>
+    apiRequest(`/hotels/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(hotelData),
+    }),
+  delete: async (id: string) =>
+    apiRequest(`/hotels/${id}`, { method: 'DELETE' }),
+  addReview: async (id: string, reviewData: { rating: number; comment?: string }) =>
+    apiRequest(`/hotels/${id}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify(reviewData),
+    }),
+};
 
 
 // Events API
